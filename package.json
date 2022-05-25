@@ -1,0 +1,34 @@
+{
+  "name": "meal-planner",
+  "version": "0.0.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "",
+  "types": "",
+  "packageManager": "yarn@3.1.1",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "client": "yarn workspace meal-planner-client",
+    "consumer": "yarn workspace meal-planner-consumer",
+    "store": "yarn workspace meal-planner-store",
+    "start:client": "yarn client start:dev",
+    "start:consumer": "yarn consumer start:dev"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
+    "@yarnpkg/sdks": "^3.0.0-rc.6",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "28.0.3",
+    "prettier": "^2.6.2",
+    "ts-jest": "28.0.1",
+    "ts-loader": "^9.2.3",
+    "tsconfig-paths": "4.0.0",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.1"
+  }
+}
