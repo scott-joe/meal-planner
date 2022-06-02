@@ -26,7 +26,6 @@ yarn client start:dev
 yarn test
 ```
 
-
 ## Roadmap
 
 ⚠️ _Convert to GH Project_
@@ -37,7 +36,6 @@ yarn test
 - [x] Consumer layer
 - [x] Stub HTTP routes for recipes
 - [ ] Connect to SQLite db
-- [ ] Homepage card stubs
 - [ ] Create new recipes (basic MD)
 - [ ] Recall and display recipe list
 - [ ] Recall and display single recipe
