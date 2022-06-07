@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { PrismaService } from '../database/database.service';
 
 @Injectable()
 export class RecipesService {
+  constructor(private prisma: PrismaService) {}
+
   create(createRecipeDto: CreateRecipeDto) {
     return 'This action adds a new recipe';
   }
 
-  findAll() {
-    return `This action returns all recipes`;
+  async findAll(): Promise<any> {
+    console.log('recipes.findAll');
+    const response = await this.prisma.recipe.findFirst();
+    console.log(response);
+    return response;
   }
 
   findOne(id: number) {

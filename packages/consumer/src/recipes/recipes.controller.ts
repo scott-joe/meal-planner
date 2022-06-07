@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { RequestPayload } from 'fastify';
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
@@ -23,7 +14,7 @@ export class RecipesController {
   }
 
   @Get()
-  findAll(@Req request: Request) {
+  findAll(@Req() request: RequestPayload) {
     return this.recipesService.findAll();
   }
 

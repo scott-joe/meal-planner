@@ -15,6 +15,8 @@
     "store": "yarn workspace meal-planner-store",
     "start:client": "yarn client start:dev",
     "start:consumer": "yarn consumer start:dev",
+    "db:gen": "yarn consumer prisma generate",
+    "db:push": "yarn consumer prisma db push",
     "workspace-exec": "exit 0",
     "build": "exit 0",
     "build:watch": "exit 0",
@@ -42,10 +44,14 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "28.0.3",
     "prettier": "^2.6.2",
+    "prisma": "^3.14.0",
     "ts-jest": "28.0.1",
     "ts-loader": "^9.2.3",
     "tsconfig-paths": "4.0.0",
     "typescript": "^4.6.4",
     "webpack": "^5.72.1"
+  },
+  "resolutions": {
+    ".prisma": "link:node-modules/.prisma"
   }
 }
