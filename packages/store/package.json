@@ -1,0 +1,11 @@
+{
+  "name": "meal-planner-store",
+  "packageManager": "yarn@3.2.1",
+  "devDependencies": {
+    "cuid": "^2.1.8",
+    "prisma": "^3.15.0"
+  },
+  "prisma": {
+    "seed": "ts-node seed.ts"
+  }
+}
