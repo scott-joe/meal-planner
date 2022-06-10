@@ -3,17 +3,10 @@ import { faker } from '@faker-js/faker';
 import cuid from 'cuid'
 
 const prisma = new PrismaClient()
-const users: Prisma.UserCreateInput[] = [];
-const recipes: Prisma.RecipeCreateInput[] = [];
-const meals: Prisma.MealCreateInput[] = [];
-const plans: Prisma.PlanCreateInput[] = [];
-const config = {
-  verbose: false,
-  numUsers: 1,
-  numRecipes: 200,
-  numMeals: 50,
-  numPlans: 4
-}
+const usersList: Prisma.UserCreateInput[] = [];
+const recipeList: Prisma.RecipeCreateInput[] = [];
+const mealList: Prisma.MealCreateInput[] = [];
+const planList: Prisma.PlanCreateInput[] = [];
 
 const preparations: string[] = [
   'broiled',
@@ -54,9 +47,19 @@ const planNames: string[] = [
   'Week of June 9th'
 ]
 
+const makeId = () => {
+  return { id: cuid() }
+}
+const makeBaseRecord = () => {
+  return {
+    ...makeId(),
+    user: findUser().id || cuid()
+  }
+}
+
 function createUser(): Prisma.UserCreateInput {
   return {
-    id: cuid(),
+    ...makeId(),
     username: faker.internet.userName(),
     email: faker.internet.email(),
     firstName: faker.name.firstName(),
@@ -66,19 +69,16 @@ function createUser(): Prisma.UserCreateInput {
 }
 function createRecipe(): Prisma.RecipeCreateInput {
   return {
-    id: cuid(),
-    user: findUser().id || cuid(),
-    name: `${findPrep()} ${faker.animal.type()}`,
+    ...makeBaseRecord(),
+    name: `${randomName(preparations)} ${faker.animal.type()}`,
     ingredients: ingredients,
     steps: steps,
-    // meals
   };
 }
 function createMeal(): Prisma.MealCreateInput {
   return {
-    id: cuid(),
-    user: findUser().id || cuid(),
-    name: findMealName(),
+    ...makeBaseRecord(),
+    name: randomName(mealNames),
     recipes: {
       connect: findAsList(findRecipes, 3)
     }
@@ -86,27 +86,24 @@ function createMeal(): Prisma.MealCreateInput {
 }
 function createPlan(): Prisma.PlanCreateInput {
   return {
-    id: cuid(),
-    user: findUser().id || cuid(),
-    name: findPlanName(),
+    ...makeBaseRecord(),
+    name: randomName(planNames),
     meals: {
       connect: findAsList(findMeals, 42)
     }
   };
 }
 
-const findUser = (): Prisma.UserCreateInput => users[Math.floor(Math.random() * users.length)] || users[0]
-const findPrep = (): string => preparations[Math.floor(Math.random() * preparations.length)] || ''
-const findMealName = (): string => mealNames[Math.floor(Math.random() * mealNames.length)] || ''
-const findPlanName = (): string => planNames[Math.floor(Math.random() * planNames.length)] || ''
+const randomName = (thing) => thing[Math.floor(Math.random() * thing.length)] || ''
+const findUser = (): Prisma.UserCreateInput => usersList[Math.floor(Math.random() * usersList.length)] || usersList[0]
 const findMeals = (count) => {
   const output = []
-  for (let i = 0; i < count; i++) output.push(meals[Math.floor(Math.random() * meals.length)] || meals[0])
+  for (let i = 0; i < count; i++) output.push(mealList[Math.floor(Math.random() * mealList.length)] || mealList[0])
   return output
 }
 const findRecipes = (count) => {
   const output = []
-  for (let i = 0; i < count; i++) output.push(recipes[Math.floor(Math.random() * recipes.length)] || recipes[0])
+  for (let i = 0; i < count; i++) output.push(recipeList[Math.floor(Math.random() * recipeList.length)] || recipeList[0])
   return output
 }
 const findAsList = (finder, count) => {
@@ -114,62 +111,35 @@ const findAsList = (finder, count) => {
     return { id: thing.id }
   })
 }
+const addRecords = (count, client, factory, tracker) => {
+  const promises = []
 
-let promises = []
+  for (let i = 1; i <= count; i++) {
+    try {
+      const data = factory()
+      promises.push(client.create({ data }))
+      tracker.push(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return promises
+}
+
+const addUsers = (count) => addRecords(count, prisma.user, createUser, usersList)
+const addRecipes = (count) => addRecords(count, prisma.recipe, createRecipe, recipeList)
+const addMeals = (count) => addRecords(count, prisma.meal, createMeal, mealList)
+const addPlans = (count) => addRecords(count, prisma.plan, createPlan, planList)
+
 async function main() {
   console.log(`Clearing dev database.`)
   console.log(`Start seeding ...`)
 
-  // Create users
-  for (let i = 1; i <= config.numUsers; i++) {
-    try {
-      const user = createUser()
-      promises.push(prisma.user.create({ data: user }))
-      users.push(user)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // Create recipes
-  for (let i = 1; i <= config.numRecipes; i++) {
-    try {
-      const recipe = createRecipe()
-      promises.push(prisma.recipe.create({ data: recipe }))
-      recipes.push(recipe)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  await Promise.all(promises)
-
-  // Create meals
-  promises = []
-  for (let i = 1; i <= config.numMeals; i++) {
-    try {
-      const meal = createMeal()
-      promises.push(prisma.meal.create({ data: meal }))
-      meals.push(meal)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  await Promise.all(promises)
-
-  // Create plans
-  // console.log(findAsList(findMeals, 42))
-  for (let i = 1; i <= config.numPlans; i++) {
-    try {
-      const plan = createPlan()
-      prisma.plan.create({ data: plan }).then((res) => {
-        console.log(res)
-      })
-      plans.push(plan)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+  await Promise.all(addUsers(1))
+  await Promise.all(addRecipes(200))
+  await Promise.all(addMeals(50))
+  await Promise.all(addPlans(6))
 }
 
 main()
