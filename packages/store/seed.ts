@@ -111,6 +111,10 @@ const findAsList = (finder, count) => {
     return { id: thing.id }
   })
 }
+const addUsers = (count) => addRecords(count, prisma.user, createUser, usersList)
+const addRecipes = (count) => addRecords(count, prisma.recipe, createRecipe, recipeList)
+const addMeals = (count) => addRecords(count, prisma.meal, createMeal, mealList)
+const addPlans = (count) => addRecords(count, prisma.plan, createPlan, planList)
 const addRecords = (count, client, factory, tracker) => {
   const promises = []
 
@@ -127,19 +131,14 @@ const addRecords = (count, client, factory, tracker) => {
   return promises
 }
 
-const addUsers = (count) => addRecords(count, prisma.user, createUser, usersList)
-const addRecipes = (count) => addRecords(count, prisma.recipe, createRecipe, recipeList)
-const addMeals = (count) => addRecords(count, prisma.meal, createMeal, mealList)
-const addPlans = (count) => addRecords(count, prisma.plan, createPlan, planList)
-
 async function main() {
   console.log(`Clearing dev database.`)
   console.log(`Start seeding ...`)
 
   await Promise.all(addUsers(1))
-  await Promise.all(addRecipes(200))
-  await Promise.all(addMeals(50))
-  await Promise.all(addPlans(6))
+  await Promise.all(addRecipes(25))
+  await Promise.all(addMeals(7))
+  await Promise.all(addPlans(4))
 }
 
 main()
