@@ -12,8 +12,7 @@ export class RecipesService {
   }
 
   async findAll(): Promise<any> {
-    console.log('recipes.findAll');
-    const response = await this.prisma.recipe.findFirst();
+    const response = await this.prisma.recipe.findMany();
     console.log(response);
     return response;
   }

@@ -19,6 +19,7 @@
     "db:push": "yarn consumer prisma db push",
     "db:reset": "yarn consumer prisma db push --force-reset --accept-data-loss",
     "db:seed": "yarn db:reset; yarn store prisma db seed",
+    "db:open": "yarn consumer prisma studio",
     "workspace-exec": "exit 0",
     "build": "exit 0",
     "build:watch": "exit 0",

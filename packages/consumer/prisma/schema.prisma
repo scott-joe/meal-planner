@@ -7,58 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model meal_recipes {
-//   id        Int @id @default(cuid())
-//   meal_id   Int
-//   recipe_id Int
-// }
-
-model Meal {
-  id      String   @id @default(cuid())
-  recipes Recipe[]
-  user    String
-  Plan    Plan?    @relation(fields: [planId], references: [id])
-  planId  String?
-
-  @@map("meals")
-}
-
-model plan_meals {
-  id      String @id @default(cuid())
-  plan_id String
-  meal_id String
-}
-
-model Plan {
-  id    String @id @default(cuid())
-  meals Meal[]
-  user  String
-
-  @@map("plans")
-}
-
-model Recipe {
-  id          String  @id @default(cuid())
-  ingredients String
-  steps       String
-  name        String?
-  user        String
-  Meal        Meal?   @relation(fields: [mealId], references: [id])
-  mealId      String?
-
-  @@map("recipes")
-}
-
 model User {
   id         String   @id @default(cuid())
   username   String?
   email      String?
   firstName  String?
   lastName   String?
+  enabled    Int      @default(1)
   created    DateTime @default(now())
   updated    DateTime @default(now())
   lastActive DateTime @default(now())
-  enabled    Int      @default(1)
 
   @@map("users")
+}
+
+model Recipe {
+  id          String   @id @default(cuid())
+  user        String
+  ingredients String
+  steps       String
+  name        String?
+  meals       Meal[]
+  created     DateTime @default(now())
+  updated     DateTime @default(now())
+
+  @@map("recipes")
+}
+
+model Meal {
+  id      String   @id @default(cuid())
+  user    String
+  name    String
+  recipes Recipe[]
+  plans   Plan[]
+  created DateTime @default(now())
+  updated DateTime @default(now())
+
+  @@map("meals")
+}
+
+model Plan {
+  id      String   @id @default(cuid())
+  user    String
+  name    String
+  meals   Meal[]
+  created DateTime @default(now())
+  updated DateTime @default(now())
+
+  @@map("plans")
 }
