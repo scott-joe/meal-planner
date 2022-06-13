@@ -10,7 +10,7 @@ export const store = configureStore({
     recipes,
     meals,
     plans,
-  },
+  }
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

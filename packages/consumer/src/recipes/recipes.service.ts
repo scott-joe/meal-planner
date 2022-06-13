@@ -13,19 +13,18 @@ export class RecipesService {
 
   async findAll(): Promise<any> {
     const response = await this.prisma.recipe.findMany();
-    console.log(response);
     return response;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} recipe`;
+  async findOne(id: string) {
+    const response = await this.prisma.recipe.findFirst({ where: { id }})
   }
 
-  update(id: number, updateRecipeDto: UpdateRecipeDto) {
+  update(id: string, updateRecipeDto: UpdateRecipeDto) {
     return `This action updates a #${id} recipe`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} recipe`;
   }
 }
