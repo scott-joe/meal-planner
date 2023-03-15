@@ -55,6 +55,6 @@
     "ts-node": "^10.8.1",
     "tsconfig-paths": "4.0.0",
     "typescript": "^4.6.4",
-    "webpack": "^5.72.1"
+    "webpack": "^5.76.0"
   }
 }
